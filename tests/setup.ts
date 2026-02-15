@@ -17,7 +17,7 @@ process.env.DATABASE_URL = DATABASE_URL;
 let pool: pg.Pool;
 
 beforeAll(async () => {
-  // Connect to default db to create test db
+  // Connect to default db to create test db if needed
   const adminPool = new pg.Pool({
     connectionString: "postgresql://a2amp:a2amp_dev@localhost:5432/a2amp",
   });
@@ -43,21 +43,18 @@ beforeAll(async () => {
     try {
       await pool.query(sql);
     } catch {
-      // Tables may already exist from a previous run
+      // Tables/triggers may already exist from a previous run
     }
   }
+
+  // Clean data before each test file (TRUNCATE, not DROP — preserves schema)
+  await pool.query(
+    "TRUNCATE reputation_scores, transactions, capabilities, agents CASCADE",
+  );
 });
 
 afterAll(async () => {
   if (pool) {
-    // Clean up tables in correct order (respect FK constraints)
-    await pool.query("DROP TABLE IF EXISTS reputation_scores CASCADE");
-    await pool.query("DROP TABLE IF EXISTS transactions CASCADE");
-    await pool.query("DROP TABLE IF EXISTS capabilities CASCADE");
-    await pool.query("DROP TABLE IF EXISTS agents CASCADE");
-    await pool.query("DROP TABLE IF EXISTS _migrations CASCADE");
-    // Drop the trigger function too
-    await pool.query("DROP FUNCTION IF EXISTS update_reputation_score CASCADE");
     await pool.end();
   }
 });

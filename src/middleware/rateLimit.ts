@@ -13,7 +13,8 @@ export async function registerRateLimit(app: FastifyInstance) {
 export const registrationRateLimit = {
   config: {
     rateLimit: {
-      max: 10,
+      // Use higher limits in test environment to avoid rate limit issues
+      max: process.env.NODE_ENV === "test" ? 1000 : 10,
       timeWindow: "1 hour",
     },
   },
