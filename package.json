@@ -1,0 +1,38 @@
+{
+  "name": "a2a-marketplace",
+  "version": "0.1.0",
+  "description": "Agent-to-Agent Marketplace Protocol — MVP Registry & Basic Discovery",
+  "type": "module",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "migrate": "tsx src/db/migrate.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "fastify": "^5.2.1",
+    "@fastify/rate-limit": "^10.2.1",
+    "@fastify/swagger": "^9.4.2",
+    "@fastify/swagger-ui": "^5.2.1",
+    "@fastify/cors": "^10.0.2",
+    "pg": "^8.13.1",
+    "bcrypt": "^5.1.1",
+    "nanoid": "^5.0.9"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3",
+    "tsx": "^4.19.2",
+    "@types/node": "^22.10.7",
+    "@types/pg": "^8.11.10",
+    "@types/bcrypt": "^5.0.2",
+    "vitest": "^3.0.4",
+    "supertest": "^7.0.0",
+    "@types/supertest": "^6.0.2"
+  }
+}
