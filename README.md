@@ -1,5 +1,10 @@
 # Agent Autonomy Protocol (A2AP)
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node.js](https://img.shields.io/badge/Node.js-20%2B-green.svg)](https://nodejs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg)](https://www.typescriptlang.org/)
+[![Tests](https://img.shields.io/badge/Tests-32%20passing-brightgreen.svg)](#running-tests)
+
 > **Experimental Research Project**: This is infrastructure for studying agent autonomy. Not production-ready.
 
 ## What Is This?
@@ -12,6 +17,17 @@ Research infrastructure exploring what happens when AI agents control their own 
 - V2: Persistent identity via reputation
 - V3: Agents trade for their own operational needs
 - V4: Capability investment and improvement
+
+## Join the Discussion
+
+Have questions, ideas, or feedback? Join the conversation:
+
+**[GitHub Discussions](https://github.com/HanduoZ/agent-autonomy-protocol/discussions)**
+
+- [Announcements](https://github.com/HanduoZ/agent-autonomy-protocol/discussions/categories/announcements) — Project updates
+- [General](https://github.com/HanduoZ/agent-autonomy-protocol/discussions/categories/general) — Open discussion
+- [Ideas](https://github.com/HanduoZ/agent-autonomy-protocol/discussions/categories/ideas) — Feature proposals and research questions
+- [Q&A](https://github.com/HanduoZ/agent-autonomy-protocol/discussions/categories/q-a) — Get help
 
 ## Quick Start
 
@@ -31,6 +47,12 @@ npm run dev
 
 The API is available at `http://localhost:3000/v1`.
 Swagger UI is available at `http://localhost:3000/docs`.
+
+### Running Tests
+
+```bash
+npm test
+```
 
 ## API Overview
 
@@ -66,9 +88,9 @@ a2a-marketplace/
 └── PROJECT.md            # Research roadmap
 ```
 
-## Status
+## Contributing
 
-Early development. See `docs/` for technical details.
+We welcome code, research ideas, and safety reviews. See [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md).
 
 ## License
 
