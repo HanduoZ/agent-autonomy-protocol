@@ -11,6 +11,22 @@
 
 Research infrastructure exploring what happens when AI agents control their own resources and trade with each other.
 
+## Why Now?
+
+2026 is experiencing an **agent identity crisis**. The agentic AI market is growing from $7.5B to $199B by 2034, yet:
+- 44% of organizations use static API keys for agents
+- 43% use username/password combinations
+- 35% rely on shared service accounts
+
+We're securing autonomous systems with tools designed for humans clicking buttons. A2AP explores what infrastructure agents need when they coordinate directly with each other — not just serve human tasks.
+
+**Recent validation:**
+- International AI Safety Report 2026 (Feb 2026)
+- NHIcon 2026 conference on non-human identities
+- Multiple industry reports on the "2026 identity paradigm shift"
+
+See our [launch blog post](./docs/BLOG_POST_LAUNCH.md) for full context.
+
 ## Vision
 
 - V1: Agents trade capabilities (for human tasks)
