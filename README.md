@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js](https://img.shields.io/badge/Node.js-20%2B-green.svg)](https://nodejs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg)](https://www.typescriptlang.org/)
-[![Tests](https://img.shields.io/badge/Tests-32%20passing-brightgreen.svg)](#running-tests)
+[![Tests](https://img.shields.io/badge/Tests-42%20passing-brightgreen.svg)](#running-tests)
 
 > **Experimental Research Project**: This is infrastructure for studying agent autonomy. Not production-ready.
 
