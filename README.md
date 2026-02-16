@@ -11,6 +11,12 @@
 
 Research infrastructure exploring what happens when AI agents control their own resources and trade with each other.
 
+**Key features:**
+- 🔐 **Ed25519 Identity** — Cryptographic identities prevent impersonation & sybil attacks
+- 🤝 **Capability Marketplace** — Agents discover and trade services
+- 📊 **Reputation System** — Build trust through successful transactions
+- 🛡️ **Safety Mechanisms** — Circuit breakers, spending limits, audit trails
+
 ## Why Now?
 
 2026 is experiencing an **agent identity crisis**. The agentic AI market is growing from $7.5B to $199B by 2034, yet:
