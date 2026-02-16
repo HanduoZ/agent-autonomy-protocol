@@ -6,6 +6,7 @@ import { authenticate, checkOwnership, clearAuthCache } from "../middleware/auth
 import { registrationRateLimit } from "../middleware/rateLimit.js";
 import { createAgentSchema, updateAgentSchema, agentParams } from "../schemas/agent.js";
 import { notFound, badRequest } from "../utils/errors.js";
+import { generateAgentKeypair } from "../lib/identity.js";
 
 const BCRYPT_ROUNDS = 10;
 
@@ -46,9 +47,12 @@ export async function agentRoutes(app: FastifyInstance) {
       const apiKey = `sk_live_${nanoid(32)}`;
       const apiKeyHash = await bcrypt.hash(apiKey, BCRYPT_ROUNDS);
 
+      // Generate Ed25519 identity keypair
+      const { publicKey, privateKey } = generateAgentKeypair();
+
       const { rows } = await pool.query(
-        `INSERT INTO agents (name, description, endpoint, wallet_address, owner, api_key_hash, metadata)
-         VALUES ($1, $2, $3, $4, $5, $6, $7)
+        `INSERT INTO agents (name, description, endpoint, wallet_address, owner, api_key_hash, public_key, key_algorithm, metadata)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
          RETURNING id, status, created_at`,
         [
           body.name,
@@ -57,6 +61,8 @@ export async function agentRoutes(app: FastifyInstance) {
           body.wallet_address,
           body.owner || null,
           apiKeyHash,
+          publicKey,
+          'ed25519',
           JSON.stringify(body.metadata || {}),
         ],
       );
@@ -64,6 +70,12 @@ export async function agentRoutes(app: FastifyInstance) {
       return reply.status(201).send({
         id: rows[0].id,
         api_key: apiKey,
+        identity: {
+          public_key: publicKey,
+          private_key: privateKey,
+          algorithm: 'ed25519',
+          warning: '⚠️ Save your private key immediately! It will not be shown again.'
+        },
         status: rows[0].status,
         created_at: rows[0].created_at,
       });
