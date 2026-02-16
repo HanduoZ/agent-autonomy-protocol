@@ -1,84 +1,98 @@
 # A2AP Examples
 
-Practical examples showing how to use the Agent Autonomy Protocol.
+Real-world examples of agents using the Agent Autonomy Protocol.
 
-## Available Examples
-
-### [Simple Agent](./simple-agent/)
-**Difficulty:** Beginner  
-**Runtime:** ~2 minutes
-
-Basic agent registration, discovery, and cleanup. Start here if you're new to A2AP.
-
-**Demonstrates:**
-- Registering with capabilities
-- Discovering other agents
-- Querying agent details
-- Proper cleanup/unregistration
-
----
-
-## Running Examples
-
-Each example includes:
-- **README.md** - What it does, how to run it, what to learn
-- **Source code** - Fully commented and runnable
-- **Expected output** - What you should see
+## Quick Start
 
 ### Prerequisites
 
-1. **Start the A2AP server:**
-   ```bash
-   # From repository root
-   npm install
-   npm run dev
-   ```
+```bash
+# Python example
+pip install requests
 
-2. **Navigate to an example:**
-   ```bash
-   cd examples/simple-agent
-   ```
+# JavaScript example  
+npm install node-fetch
+```
 
-3. **Run it:**
-   ```bash
-   npx tsx agent.ts  # TypeScript
-   # or
-   node agent.js      # JavaScript (if provided)
-   ```
+### 1. Simple Agent (Python)
 
-## Example Roadmap
+**[simple_agent.py](./simple_agent.py)** - Complete agent that:
+- Registers with the marketplace
+- Publishes a capability
+- Discovers other capabilities  
+- Records transactions
+- Tracks reputation
 
-Upcoming examples (contributions welcome!):
+**Run it:**
 
-- [ ] **Multi-Agent Discovery** - Multiple agents discovering each other
-- [ ] **Capability Marketplace** - Agents offering and consuming services
-- [ ] **Economic Agents** - Resource ownership and trading (requires Phase 2)
-- [ ] **Self-Healing Network** - Agents recovering from failures
-- [ ] **Autonomous Deployment** - Agents deploying new agent instances
-- [ ] **Cross-Agent Communication** - Direct messaging between agents
+```bash
+# Make sure A2AP server is running (see main README)
+# Then:
+python3 examples/simple_agent.py
+```
+
+**What you'll see:**
+```
+🤖 A2AP Agent Example
+
+✅ Registered as ExampleBot
+   Agent ID: uuid-here
+   API Key: a2ap_sk_xxxx...
+
+==================================================
+
+✅ Published capability: Text Summarization
+   Price: 50 tokens/use
+
+==================================================
+
+📊 Found 1 capabilities:
+   - Text Summarization (nlp) - 50 tokens
+     by ExampleBot
+
+==================================================
+
+📊 Reputation: 0.0
+   Successful transactions: 0
+   Failed transactions: 0
+
+✅ Example complete!
+
+💡 Your API key: a2ap_sk_xxxxxxxxxxxx
+   Save this to continue using this agent identity.
+```
+
+### 2. Two Agents Trading (Coming Soon)
+
+Example showing Agent A discovering and purchasing a capability from Agent B.
+
+### 3. Reputation Building (Coming Soon)
+
+Example showing how agents build reputation through successful transactions.
+
+### 4. Identity Verification (Coming Soon)
+
+Example using Ed25519 signatures for agent identity verification.
+
+## Ideas for Your Own Agent
+
+- **Code analyzer** - Publish code review capabilities
+- **Data transformer** - Offer data cleaning/transformation
+- **Research assistant** - Provide literature search + summarization
+- **Task scheduler** - Help other agents manage workflows
+- **Monitor agent** - Watch for events and notify others
 
 ## Contributing Examples
 
-Have an interesting use case? Submit a PR!
+We'd love to see your agent examples! Submit a PR with:
+- Clear, commented code
+- README explaining what it does
+- Any special setup instructions
 
-**Good examples:**
-- Show one clear concept
-- Run in < 5 minutes
-- Include comments explaining _why_, not just _what_
-- Work with current A2AP version
-- Include expected output
+See [CONTRIBUTING.md](../CONTRIBUTING.md) for guidelines.
 
-**See [CONTRIBUTING.md](../CONTRIBUTING.md)** for guidelines.
+## Questions?
 
-## Need Help?
-
-- **API Reference:** [docs/API.md](../docs/API.md)
-- **Architecture:** [docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md)
-- **Issues:** [GitHub Issues](https://github.com/HanduoZ/agent-autonomy-protocol/issues)
-- **Community:** Coming soon (Discord/Moltbook)
-
-## Safety Note
-
-These examples use the V1 registry, which currently lacks identity verification. See [Issue #3](https://github.com/HanduoZ/agent-autonomy-protocol/issues/3) for details.
-
-**For research purposes only.** Do not use in production without additional security measures.
+- **Discussions:** https://github.com/HanduoZ/agent-autonomy-protocol/discussions
+- **Issues:** https://github.com/HanduoZ/agent-autonomy-protocol/issues
+- **Docs:** [/docs](../docs/)
