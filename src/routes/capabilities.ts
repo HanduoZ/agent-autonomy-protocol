@@ -90,7 +90,7 @@ export async function capabilityRoutes(app: FastifyInstance) {
 
       const { rows } = await pool.query(
         `SELECT c.*, a.name AS agent_name, a.endpoint AS agent_endpoint,
-                a.wallet_address AS agent_wallet_address,
+                a.wallet_address AS agent_wallet_address, a.verified AS agent_verified,
                 r.score, r.total_transactions, r.success_rate, r.avg_latency_ms
          FROM capabilities c
          JOIN agents a ON a.id = c.agent_id
@@ -122,6 +122,7 @@ export async function capabilityRoutes(app: FastifyInstance) {
           name: row.agent_name,
           endpoint: row.agent_endpoint,
           wallet_address: row.agent_wallet_address,
+          verified: row.agent_verified ?? false,
         },
         reputation: {
           score: row.score ?? 0,
@@ -145,6 +146,7 @@ export async function capabilityRoutes(app: FastifyInstance) {
         min_reputation?: number;
         currency?: string;
         network?: string;
+        verified?: boolean;
         limit?: number;
         offset?: number;
       };
@@ -192,6 +194,12 @@ export async function capabilityRoutes(app: FastifyInstance) {
         paramIdx++;
       }
 
+      if (query.verified !== undefined) {
+        conditions.push(`a.verified = $${paramIdx}`);
+        params.push(query.verified);
+        paramIdx++;
+      }
+
       const whereClause = conditions.join(" AND ");
 
       // Count total matching
@@ -210,6 +218,7 @@ export async function capabilityRoutes(app: FastifyInstance) {
         `SELECT c.id, c.agent_id, c.name, c.description, c.category, c.pricing, c.sla,
                 c.input_schema, c.output_schema, c.status, c.created_at,
                 a.name AS agent_name, a.endpoint AS agent_endpoint, a.wallet_address AS agent_wallet_address,
+                a.verified AS agent_verified,
                 COALESCE(r.score, 0) AS rep_score,
                 COALESCE(r.total_transactions, 0) AS rep_total,
                 COALESCE(r.success_rate, 0) AS rep_success_rate,
@@ -238,6 +247,7 @@ export async function capabilityRoutes(app: FastifyInstance) {
             name: row.agent_name,
             endpoint: row.agent_endpoint,
             wallet_address: row.agent_wallet_address,
+            verified: row.agent_verified ?? false,
           },
           reputation: {
             score: row.rep_score,

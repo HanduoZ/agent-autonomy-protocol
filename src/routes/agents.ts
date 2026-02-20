@@ -6,7 +6,6 @@ import { authenticate, checkOwnership, clearAuthCache } from "../middleware/auth
 import { registrationRateLimit } from "../middleware/rateLimit.js";
 import { createAgentSchema, updateAgentSchema, agentParams } from "../schemas/agent.js";
 import { notFound, badRequest } from "../utils/errors.js";
-import { generateAgentKeypair } from "../lib/identity.js";
 
 const BCRYPT_ROUNDS = 10;
 
@@ -23,6 +22,7 @@ export async function agentRoutes(app: FastifyInstance) {
         wallet_address: string;
         owner?: string;
         metadata?: Record<string, unknown>;
+        public_key?: string;
       };
 
       // Validate endpoint reachability (skip in test environment)
@@ -47,12 +47,12 @@ export async function agentRoutes(app: FastifyInstance) {
       const apiKey = `sk_live_${nanoid(32)}`;
       const apiKeyHash = await bcrypt.hash(apiKey, BCRYPT_ROUNDS);
 
-      // Generate Ed25519 identity keypair
-      const { publicKey, privateKey } = generateAgentKeypair();
+      const verified = !!body.public_key;
+      const verificationMethod = body.public_key ? "keypair" : "api_key";
 
       const { rows } = await pool.query(
-        `INSERT INTO agents (name, description, endpoint, wallet_address, owner, api_key_hash, public_key, key_algorithm, metadata)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        `INSERT INTO agents (name, description, endpoint, wallet_address, owner, api_key_hash, metadata, public_key, verified, verification_method)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
          RETURNING id, status, created_at`,
         [
           body.name,
@@ -61,22 +61,19 @@ export async function agentRoutes(app: FastifyInstance) {
           body.wallet_address,
           body.owner || null,
           apiKeyHash,
-          publicKey,
-          'ed25519',
           JSON.stringify(body.metadata || {}),
+          body.public_key || null,
+          verified,
+          verificationMethod,
         ],
       );
 
       return reply.status(201).send({
         id: rows[0].id,
         api_key: apiKey,
-        identity: {
-          public_key: publicKey,
-          private_key: privateKey,
-          algorithm: 'ed25519',
-          warning: '⚠️ Save your private key immediately! It will not be shown again.'
-        },
         status: rows[0].status,
+        verified,
+        verification_method: verificationMethod,
         created_at: rows[0].created_at,
       });
     },
@@ -91,7 +88,7 @@ export async function agentRoutes(app: FastifyInstance) {
 
       const { rows } = await pool.query(
         `SELECT a.id, a.name, a.description, a.endpoint, a.wallet_address, a.owner,
-                a.status, a.metadata, a.created_at, a.updated_at,
+                a.status, a.metadata, a.verified, a.verification_method, a.created_at, a.updated_at,
                 r.score, r.total_transactions, r.success_rate, r.avg_latency_ms
          FROM agents a
          LEFT JOIN reputation_scores r ON r.agent_id = a.id
@@ -110,6 +107,8 @@ export async function agentRoutes(app: FastifyInstance) {
         wallet_address: agent.wallet_address,
         owner: agent.owner,
         status: agent.status,
+        verified: agent.verified ?? false,
+        verification_method: agent.verification_method ?? "api_key",
         metadata: agent.metadata,
         created_at: agent.created_at,
         updated_at: agent.updated_at,

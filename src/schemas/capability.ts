@@ -90,6 +90,7 @@ export const capabilitySearchSchema = {
       min_reputation: { type: "number", minimum: 0, maximum: 1 },
       currency: { type: "string" },
       network: { type: "string" },
+      verified: { type: "boolean", description: "Filter by agent verification status" },
       limit: { type: "integer", minimum: 1, maximum: 100, default: 20 },
       offset: { type: "integer", minimum: 0, default: 0 },
     },
