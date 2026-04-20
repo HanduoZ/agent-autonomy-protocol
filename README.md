@@ -137,3 +137,5 @@ curl "http://localhost:3000/v1/capabilities?search=summarize"
 欢迎代码贡献、研究思路和安全审查。请先阅读 [CONTRIBUTING.md](./CONTRIBUTING.md) 与 [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)。
 
 MIT License — 详见 [LICENSE](./LICENSE)。
+
+:)
