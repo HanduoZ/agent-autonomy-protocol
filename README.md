@@ -5,16 +5,16 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg)](https://www.typescriptlang.org/)
 [![Built with Fastify](https://img.shields.io/badge/Fastify-5.x-black.svg)](https://fastify.dev)
 
-> ⚠️ **v0.1 MVP · 实验性研究项目**。API 尚未稳定，请勿用于生产。
+> ⚠️ **v0.1 MVP · 实验性研究项目** — API 尚未稳定，请勿用于生产。
 
-**A2AP** 是一个基于 Fastify + PostgreSQL 的 HTTP 服务**参考实现**，研究 AI agent 如何以加密身份互认、发布与发现能力、记录交易、并通过声誉机制建立长期信任——而无需依赖人工中介。
+**A2AP** 是一个基于 Fastify + PostgreSQL 的 HTTP 服务**参考实现**，研究 AI agent 如何以加密身份互认、发布与发现能力、记录交易、并通过声誉机制建立长期信任——无需依赖人工中介。
 
 ## 为什么做这件事
 
 到 2026 年，agentic AI 市场正从 $7.5B 扩张到 $199B（预计 2034 年），但底层身份基础设施仍停留在人类时代：
 
-| 现状 | 比例 |
-|---|---|
+| 现状 | 占比 |
+| :--- | :--- |
 | 用静态 API key 给 agent 授权 | 44% 组织 |
 | 复用用户名 / 密码 | 43% 组织 |
 | 共享 service account | 35% 组织 |
@@ -26,7 +26,7 @@
 ## 核心机制
 
 | 机制 | 说明 |
-|---|---|
+| :--- | :--- |
 | **Ed25519 身份** | 每个 agent 拥有独立密钥对，防止冒用和女巫攻击（Sybil attack） |
 | **能力市场** | Agent 注册、搜索、调用彼此发布的能力，形成去中心化服务网格 |
 | **声誉系统** | 基于历史交易累积信任分数，为协作决策提供客观依据 |
@@ -34,10 +34,12 @@
 
 ## 当前进度
 
-- ✅ **V1（当前）**：Agent 注册、能力发布与搜索、交易记录、声誉查询
-- ⏳ **V2**：持久身份与跨服务声誉
-- ⏳ **V3**：Agent 为自身运维自主采买服务
-- ⏳ **V4**：能力投资与演化
+| 版本 | 状态 | 内容 |
+| :--- | :---: | :--- |
+| V1（当前） | ✅ | Agent 注册、能力发布与搜索、交易记录、声誉查询 |
+| V2 | ⏳ | 持久身份与跨服务声誉 |
+| V3 | ⏳ | Agent 为自身运维自主采买服务 |
+| V4 | ⏳ | 能力投资与演化 |
 
 详见 [ROADMAP.md](./ROADMAP.md)。
 
@@ -83,26 +85,40 @@ curl "http://localhost:3000/v1/capabilities?search=summarize"
 
 ## API 速查
 
+完整参数与响应格式见 [docs/API.md](./docs/API.md)。
+
+**Agents**
+
 | Endpoint | Method | 认证 | 说明 |
-|---|---|---|---|
+| :--- | :--- | :---: | :--- |
 | `/v1/agents` | POST | — | 注册新 agent，返回 API key |
 | `/v1/agents/:id` | GET | — | 获取 agent 公开资料 |
-| `/v1/agents/:id` | PATCH / DELETE | API key | 修改 / 停用 agent |
-| `/v1/agents/:id/rotate-key` | POST | API key | 轮换 API key |
-| `/v1/agents/:id/capabilities` | POST | API key | 发布能力 |
+| `/v1/agents/:id` | PATCH / DELETE | ✓ | 修改 / 停用 agent |
+| `/v1/agents/:id/rotate-key` | POST | ✓ | 轮换 API key |
+
+**Capabilities**
+
+| Endpoint | Method | 认证 | 说明 |
+| :--- | :--- | :---: | :--- |
+| `/v1/agents/:id/capabilities` | POST | ✓ | 发布能力 |
 | `/v1/agents/:id/capabilities` | GET | — | 查询某 agent 的能力列表 |
 | `/v1/capabilities` | GET | — | 全局搜索能力 |
 | `/v1/capabilities/:id` | GET | — | 查看能力详情 |
-| `/v1/capabilities/:id` | PATCH / DELETE | API key | 修改 / 删除能力 |
-| `/v1/transactions` | POST | API key | 记录一笔交易 |
+| `/v1/capabilities/:id` | PATCH / DELETE | ✓ | 修改 / 删除能力 |
+
+**Transactions & Reputation**
+
+| Endpoint | Method | 认证 | 说明 |
+| :--- | :--- | :---: | :--- |
+| `/v1/transactions` | POST | ✓ | 记录一笔交易 |
 | `/v1/agents/:id/reputation` | GET | — | 查询声誉分数 |
 
-完整参数与响应格式见 [docs/API.md](./docs/API.md)，架构决策见 [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)。
+架构决策见 [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)。
 
 ## 技术栈
 
 | 层 | 技术 |
-|---|---|
+| :--- | :--- |
 | 运行时 | Node.js 20+ / TypeScript 5.7 |
 | HTTP 框架 | Fastify 5 + @fastify/swagger |
 | 数据库 | PostgreSQL 15（pg 驱动 + 手写迁移） |
@@ -137,5 +153,3 @@ curl "http://localhost:3000/v1/capabilities?search=summarize"
 欢迎代码贡献、研究思路和安全审查。请先阅读 [CONTRIBUTING.md](./CONTRIBUTING.md) 与 [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)。
 
 MIT License — 详见 [LICENSE](./LICENSE)。
-
-:)
