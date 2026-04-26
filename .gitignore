@@ -30,3 +30,6 @@ __pycache__/
 *.pyc
 .venv/
 *.egg-info/
+
+.git-credentials
+.claude/settings.json

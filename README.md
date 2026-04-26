@@ -5,16 +5,18 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg)](https://www.typescriptlang.org/)
 [![Built with Fastify](https://img.shields.io/badge/Fastify-5.x-black.svg)](https://fastify.dev)
 
-> ⚠️ **v0.1 MVP · 实验性研究项目**。API 尚未稳定，请勿用于生产。
+> ⚠️ **v0.1 MVP · 实验性研究项目** — API 尚未稳定，请勿用于生产。
 
-**A2AP** 是一个基于 Fastify + PostgreSQL 的 HTTP 服务**参考实现**，研究 AI agent 如何以加密身份互认、发布与发现能力、记录交易、并通过声誉机制建立长期信任——而无需依赖人工中介。
+**A2AP** 是一个基于 Fastify + PostgreSQL 的 HTTP 服务**参考实现**，研究 AI agent 如何以加密身份互认、发布与发现能力、记录交易、并通过声誉机制建立长期信任——无需依赖人工中介。
+
+---
 
 ## 为什么做这件事
 
 到 2026 年，agentic AI 市场正从 $7.5B 扩张到 $199B（预计 2034 年），但底层身份基础设施仍停留在人类时代：
 
 | 现状 | 比例 |
-|---|---|
+| :--- | :--- |
 | 用静态 API key 给 agent 授权 | 44% 组织 |
 | 复用用户名 / 密码 | 43% 组织 |
 | 共享 service account | 35% 组织 |
@@ -23,14 +25,18 @@
 
 背景与动机详见 [启动博客](./docs/BLOG_POST_LAUNCH.md) 与 [AUTONOMY_THESIS.md](./AUTONOMY_THESIS.md)。
 
+---
+
 ## 核心机制
 
 | 机制 | 说明 |
-|---|---|
+| :--- | :--- |
 | **Ed25519 身份** | 每个 agent 拥有独立密钥对，防止冒用和女巫攻击（Sybil attack） |
 | **能力市场** | Agent 注册、搜索、调用彼此发布的能力，形成去中心化服务网格 |
 | **声誉系统** | 基于历史交易累积信任分数，为协作决策提供客观依据 |
 | **安全边界** | 断路器、消费上限、API key 轮换、完整审计日志 |
+
+---
 
 ## 当前进度
 
@@ -41,6 +47,8 @@
 
 详见 [ROADMAP.md](./ROADMAP.md)。
 
+---
+
 ## 快速开始
 
 **前置要求**：Node.js ≥ 20、Docker（运行 PostgreSQL）、npm。
@@ -48,7 +56,7 @@
 ```bash
 docker compose up -d          # 启动 PostgreSQL
 npm install                   # 安装依赖
-cp .env.example .env          # 配置环境变量
+cp .env.example .env          # 复制环境变量模板（按需修改）
 npm run migrate               # 运行数据库迁移
 npm run dev                   # 启动开发服务器（http://localhost:3000）
 npm test                      # 运行测试套件
@@ -56,9 +64,12 @@ npm test                      # 运行测试套件
 
 服务启动后：
 
-- **API 根路径**：`http://localhost:3000/v1`
-- **Swagger UI**：`http://localhost:3000/docs`
-- **冒烟测试**：`curl http://localhost:3000/v1/capabilities` 返回 `[]` 即成功
+| 地址 | 说明 |
+| :--- | :--- |
+| `http://localhost:3000/v1` | API 根路径 |
+| `http://localhost:3000/docs` | Swagger UI（交互式文档） |
+
+冒烟测试：`curl http://localhost:3000/v1/capabilities` 返回 `[]` 即成功。
 
 ### 5 分钟上手示例
 
@@ -81,10 +92,12 @@ curl "http://localhost:3000/v1/capabilities?search=summarize"
 
 更完整的流程见 [docs/QUICKSTART_TUTORIAL.md](./docs/QUICKSTART_TUTORIAL.md)。
 
+---
+
 ## API 速查
 
 | Endpoint | Method | 认证 | 说明 |
-|---|---|---|---|
+| :--- | :--- | :--- | :--- |
 | `/v1/agents` | POST | — | 注册新 agent，返回 API key |
 | `/v1/agents/:id` | GET | — | 获取 agent 公开资料 |
 | `/v1/agents/:id` | PATCH / DELETE | API key | 修改 / 停用 agent |
@@ -99,16 +112,20 @@ curl "http://localhost:3000/v1/capabilities?search=summarize"
 
 完整参数与响应格式见 [docs/API.md](./docs/API.md)，架构决策见 [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)。
 
+---
+
 ## 技术栈
 
 | 层 | 技术 |
-|---|---|
+| :--- | :--- |
 | 运行时 | Node.js 20+ / TypeScript 5.7 |
 | HTTP 框架 | Fastify 5 + @fastify/swagger |
 | 数据库 | PostgreSQL 15（pg 驱动 + 手写迁移） |
 | 加密 | TweetNaCl.js（Ed25519 签名） |
 | 测试 | Vitest + Supertest |
 | 容器化 | Docker / Docker Compose |
+
+---
 
 ## 目录结构
 
@@ -128,6 +145,8 @@ curl "http://localhost:3000/v1/capabilities?search=summarize"
 
 关键文档：[PHILOSOPHY.md](./PHILOSOPHY.md) · [AUTONOMY_THESIS.md](./AUTONOMY_THESIS.md) · [PROJECT.md](./PROJECT.md) · [ROADMAP.md](./ROADMAP.md)
 
+---
+
 ## 参与讨论
 
 问题、想法、反馈 → [GitHub Discussions](https://github.com/HanduoZ/agent-autonomy-protocol/discussions)
@@ -137,5 +156,3 @@ curl "http://localhost:3000/v1/capabilities?search=summarize"
 欢迎代码贡献、研究思路和安全审查。请先阅读 [CONTRIBUTING.md](./CONTRIBUTING.md) 与 [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)。
 
 MIT License — 详见 [LICENSE](./LICENSE)。
-
-:)
