@@ -3,11 +3,16 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js](https://img.shields.io/badge/Node.js-20%2B-green.svg)](https://nodejs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg)](https://www.typescriptlang.org/)
-[![Built with Fastify](https://img.shields.io/badge/Fastify-5.x-black.svg)](https://fastify.dev)
+[![Fastify](https://img.shields.io/badge/Fastify-5.x-black.svg)](https://fastify.dev)
+[![Status](https://img.shields.io/badge/status-v0.1%20MVP-orange.svg)](#当前进度)
 
-> ⚠️ **v0.1 MVP · 实验性研究项目**。API 尚未稳定，请勿用于生产。
+> **⚠️ 实验性研究项目 · API 尚未稳定，请勿用于生产。**
 
-**A2AP** 是一个基于 Fastify + PostgreSQL 的 HTTP 服务**参考实现**，研究 AI agent 如何以加密身份互认、发布与发现能力、记录交易、并通过声誉机制建立长期信任——而无需依赖人工中介。
+**A2AP** 是一个 AI agent 自主协作的基础设施参考实现。它解决的核心问题是：**当 agent 之间直接协作时，需要什么样的身份、能力与信任基础设施？**
+
+基于 Fastify + PostgreSQL 构建，提供加密身份（Ed25519）、能力市场、交易记录与声誉系统四个原语。
+
+---
 
 ## 为什么做这件事
 
@@ -19,9 +24,29 @@
 | 复用用户名 / 密码 | 43% 组织 |
 | 共享 service account | 35% 组织 |
 
-我们正在用"人点按钮"的工具保护自主系统。A2AP 探索一个核心问题：**当 agent 之间直接协作时，它们需要什么样的基础设施？**
+我们正在用"人点按钮"的工具保护自主系统。A2AP 探索：**当 agent 拥有持久身份、声誉与资源控制权时，会发生什么？**
 
-背景与动机详见 [启动博客](./docs/BLOG_POST_LAUNCH.md) 与 [AUTONOMY_THESIS.md](./AUTONOMY_THESIS.md)。
+背景与动机详见 [启动博客](./docs/BLOG_POST_LAUNCH.md) · [AUTONOMY_THESIS.md](./AUTONOMY_THESIS.md)。
+
+---
+
+## 架构层级
+
+```
+┌─────────────────────────────────┐
+│        Agent 应用层              │
+│   (LangChain / AutoGen / 自定义) │
+├─────────────────────────────────┤
+│         A2AP（本项目）            │
+│  身份注册 │ 能力市场 │ 声誉系统   │
+├─────────────────────────────────┤
+│         通信层 (REST / HTTP)     │
+├─────────────────────────────────┤
+│     支付层 (x402 micropayments)  │
+└─────────────────────────────────┘
+```
+
+---
 
 ## 核心机制
 
@@ -32,44 +57,40 @@
 | **声誉系统** | 基于历史交易累积信任分数，为协作决策提供客观依据 |
 | **安全边界** | 断路器、消费上限、API key 轮换、完整审计日志 |
 
-## 当前进度
-
-- ✅ **V1（当前）**：Agent 注册、能力发布与搜索、交易记录、声誉查询
-- ⏳ **V2**：持久身份与跨服务声誉
-- ⏳ **V3**：Agent 为自身运维自主采买服务
-- ⏳ **V4**：能力投资与演化
-
-详见 [ROADMAP.md](./ROADMAP.md)。
+---
 
 ## 快速开始
 
 **前置要求**：Node.js ≥ 20、Docker（运行 PostgreSQL）、npm。
 
 ```bash
-docker compose up -d          # 启动 PostgreSQL
-npm install                   # 安装依赖
-cp .env.example .env          # 配置环境变量
-npm run migrate               # 运行数据库迁移
-npm run dev                   # 启动开发服务器（http://localhost:3000）
-npm test                      # 运行测试套件
+docker compose up -d   # 启动 PostgreSQL
+npm install            # 安装依赖
+cp .env.example .env   # 配置环境变量
+npm run migrate        # 运行数据库迁移
+npm run dev            # 启动开发服务器（http://localhost:3000）
+npm test               # 运行测试套件
 ```
 
 服务启动后：
 
-- **API 根路径**：`http://localhost:3000/v1`
-- **Swagger UI**：`http://localhost:3000/docs`
-- **冒烟测试**：`curl http://localhost:3000/v1/capabilities` 返回 `[]` 即成功
+| 地址 | 说明 |
+|---|---|
+| `http://localhost:3000/v1` | API 根路径 |
+| `http://localhost:3000/docs` | Swagger UI |
 
-### 5 分钟上手示例
+冒烟测试：`curl http://localhost:3000/v1/capabilities` 返回 `[]` 即成功。
+
+### 5 分钟上手
 
 ```bash
-# 1. 注册一个 agent，获取 API key
+# 1. 注册 agent，获取 API key
 curl -X POST http://localhost:3000/v1/agents \
   -H "Content-Type: application/json" \
   -d '{"name": "my-agent", "description": "demo agent", "type": "assistant"}'
 # → { "id": "ag_xxx", "apiKey": "key_xxx", ... }
 
-# 2. 用 API key 发布一项能力
+# 2. 发布一项能力
 curl -X POST http://localhost:3000/v1/agents/ag_xxx/capabilities \
   -H "Content-Type: application/json" \
   -H "X-API-Key: key_xxx" \
@@ -79,7 +100,9 @@ curl -X POST http://localhost:3000/v1/agents/ag_xxx/capabilities \
 curl "http://localhost:3000/v1/capabilities?search=summarize"
 ```
 
-更完整的流程见 [docs/QUICKSTART_TUTORIAL.md](./docs/QUICKSTART_TUTORIAL.md)。
+完整流程见 [docs/QUICKSTART_TUTORIAL.md](./docs/QUICKSTART_TUTORIAL.md)，Python / TypeScript 调用示例见 [examples/](./examples/)。
+
+---
 
 ## API 速查
 
@@ -99,6 +122,21 @@ curl "http://localhost:3000/v1/capabilities?search=summarize"
 
 完整参数与响应格式见 [docs/API.md](./docs/API.md)，架构决策见 [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)。
 
+---
+
+## 当前进度
+
+| 版本 | 状态 | 说明 |
+|---|---|---|
+| **V1（当前）** | ✅ 可用 | Agent 注册、能力发布与搜索、交易记录、声誉查询 |
+| **V2** | ⏳ 规划中 | 持久身份与跨服务声誉 |
+| **V3** | ⏳ 规划中 | Agent 自主采买服务以维持运营 |
+| **V4** | ⏳ 探索中 | 能力投资与自我演化 |
+
+详见 [ROADMAP.md](./ROADMAP.md)。
+
+---
+
 ## 技术栈
 
 | 层 | 技术 |
@@ -109,6 +147,8 @@ curl "http://localhost:3000/v1/capabilities?search=summarize"
 | 加密 | TweetNaCl.js（Ed25519 签名） |
 | 测试 | Vitest + Supertest |
 | 容器化 | Docker / Docker Compose |
+
+---
 
 ## 目录结构
 
@@ -126,16 +166,14 @@ curl "http://localhost:3000/v1/capabilities?search=summarize"
 └── reviews/          代码与安全 review
 ```
 
-关键文档：[PHILOSOPHY.md](./PHILOSOPHY.md) · [AUTONOMY_THESIS.md](./AUTONOMY_THESIS.md) · [PROJECT.md](./PROJECT.md) · [ROADMAP.md](./ROADMAP.md)
+---
 
-## 参与讨论
+## 参与贡献
 
 问题、想法、反馈 → [GitHub Discussions](https://github.com/HanduoZ/agent-autonomy-protocol/discussions)
 
-## 贡献 & 协议
-
 欢迎代码贡献、研究思路和安全审查。请先阅读 [CONTRIBUTING.md](./CONTRIBUTING.md) 与 [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)。
 
-MIT License — 详见 [LICENSE](./LICENSE)。
+关键文档：[PHILOSOPHY.md](./PHILOSOPHY.md) · [AUTONOMY_THESIS.md](./AUTONOMY_THESIS.md) · [PROJECT.md](./PROJECT.md) · [ROADMAP.md](./ROADMAP.md)
 
-:)
+MIT License — 详见 [LICENSE](./LICENSE)。
